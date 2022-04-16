@@ -21,7 +21,11 @@ export default function Home() {
         <Banner buttonText='View stores nearby' onButtonClick={handleOnButtonClick} />
         <div className={styles.heroImage}>
           <Image src='/static/hero-image.png' alt='Hero-Image' width={700} height={400} />
-          <Card />
+        </div>
+        <div className={styles.cardLayout}>
+          <Card
+          className={styles.card}
+           />
         </div>
       </main>
     </div>
