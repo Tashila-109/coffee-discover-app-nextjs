@@ -4,8 +4,14 @@ import { useRouter } from 'next/router';
 
 import coffeeStoresData from '../../data/coffee-stores.json';
 
+import styles from '../../styles/coffee-store.module.css';
+
 const CoffeeStore = props => {
   const router = useRouter();
+
+  if (router.isFallback) {
+    return <div>Loading...</div>
+  }
 
   const { address, name, neighbourhood } = props;
 
@@ -42,7 +48,7 @@ export function getStaticPaths() {
   });
   return {
     paths,
-    fallback: false,
+    fallback: true,
   };
 }
 
