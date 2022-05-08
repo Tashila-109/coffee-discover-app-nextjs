@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
-import coffeeStoresData from '../../data/coffee-stores.json';
+import { fetchCoffeeStores } from '../../lib/coffee-stores';
 
 import styles from '../../styles/coffee-store.module.css';
 
@@ -15,11 +15,11 @@ const CoffeeStore = props => {
     return <div>Loading...</div>;
   }
 
-  const { address, name, neighbourhood, imgUrl } = props;
+  const { location, name, imgUrl } = props;
 
   const hanelUpvoteButton = () => {
     console.log('Up vote');
-  }
+  };
 
   return (
     <div className={styles.layout}>
@@ -42,35 +42,45 @@ const CoffeeStore = props => {
 
         <div className={classNames('glass', styles.col2)}>
           <div className={styles.iconWrapper}>
-            <Image src='/static/icons/places.svg' width={24} height={24} alt="Places" />
-            <p className={styles.text}>{address}</p>
+            <Image src='/static/icons/places.svg' width={24} height={24} alt='Places' />
+            <p className={styles.text}>{location.address}</p>
           </div>
+
+          {location.region && (
+            <div className={styles.iconWrapper}>
+              <Image src='/static/icons/nearMe.svg' width={24} height={24} alt='Near Me' />
+              <p className={styles.text}>{location.region}</p>
+            </div>
+          )}
+
           <div className={styles.iconWrapper}>
-            <Image src='/static/icons/nearMe.svg' width={24} height={24} alt="Near Me" />
-            <p className={styles.text}>{neighbourhood}</p>
-          </div>
-          <div className={styles.iconWrapper}>
-            <Image src='/static/icons/star.svg' width={24} height={24} alt="Star" />
+            <Image src='/static/icons/star.svg' width={24} height={24} alt='Star' />
             <p className={styles.text}>{1}</p>
           </div>
 
-          <button className={styles.upvoteButton} onClick={hanelUpvoteButton}>Up Vote</button>
+          <button className={styles.upvoteButton} onClick={hanelUpvoteButton}>
+            Up Vote
+          </button>
         </div>
       </div>
     </div>
   );
 };
 
-export function getStaticProps({ params }) {
+export async function getStaticProps({ params }) {
+  const coffeeStores = await fetchCoffeeStores();
+
   return {
     props: {
-      coffeeStore: coffeeStoresData.find(coffeeStore => coffeeStore.id.toString() === params.id),
+      coffeeStore: coffeeStores.find(coffeeStore => coffeeStore.id.toString() === params.id),
     }, // will be passed to the page component as props
   };
 }
 
-export function getStaticPaths() {
-  const paths = coffeeStoresData.map(coffeeStore => {
+export async function getStaticPaths() {
+  const coffeeStores = await fetchCoffeeStores();
+
+  const paths = coffeeStores.map(coffeeStore => {
     return {
       params: {
         id: coffeeStore.id.toString(),
