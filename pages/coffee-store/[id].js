@@ -15,7 +15,7 @@ const CoffeeStore = props => {
     return <div>Loading...</div>;
   }
 
-  const { location, name, imgUrl } = props;
+  const { location, name, imgUrl } = props.coffeeStore;
 
   const hanelUpvoteButton = () => {
     console.log('Up vote');
@@ -31,7 +31,7 @@ const CoffeeStore = props => {
         <div className={styles.col1}>
           <div className={styles.backToHomeLink}>
             <Link href='/'>
-              <a>Backl to home</a>
+              <a>Back to home</a>
             </Link>
           </div>
           <div className={styles.nameWrapper}>
