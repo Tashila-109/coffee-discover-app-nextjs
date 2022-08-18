@@ -3,14 +3,20 @@ import Image from 'next/image';
 
 import Banner from '../components/Banner';
 import Card from '../components/Card';
+
 import { fetchCoffeeStores } from '../lib/coffee-stores';
+import useTrackLocation from '../hooks/use-track-location';
 
 import styles from '../styles/Home.module.css';
 
 export default function Home({ coffeeStores }) {
+  const { handleTrackLocation, latLong, locationErrorMsg, isFindingLocation } = useTrackLocation();
+
+  console.log({ latLong, locationErrorMsg });
+
   const handleOnBannerBtnClick = () => {
-    console.log("hi banner button");
-    // handleTrackLocation();
+    console.log('hi banner button');
+    handleTrackLocation();
   };
 
   return (
@@ -22,29 +28,32 @@ export default function Home({ coffeeStores }) {
       </Head>
 
       <main className={styles.main}>
-        <Banner buttonText='View stores nearby' onButtonClick={handleOnBannerBtnClick} />
+        <Banner buttonText={isFindingLocation ? 'Locating...' : 'View stores nearby'} onButtonClick={handleOnBannerBtnClick} />
+        {locationErrorMsg && <p>Something went wrong: {locationErrorMsg}</p>}
         <div className={styles.heroImage}>
           <Image src='/static/hero-image.png' alt='Hero-Image' width={700} height={400} />
         </div>
-        {coffeeStores.length > 0 && (
-          <div>
-            <h2 className={styles.heading2}>Tronto Coffee Stores</h2>
-            <div className={styles.cardLayout}>
-              {coffeeStores.map(coffeeStore => (
-                <Card
-                  key={coffeeStore.id}
-                  name={coffeeStore.name}
-                  imgUrl={
-                    coffeeStore.imgUrl ||
-                    'https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80'
-                  }
-                  href={`/coffee-store/${coffeeStore.id}`}
-                  className={styles.card}
-                />
-              ))}
+        <div className={styles.sectionWrapper}>
+          {coffeeStores.length > 0 && (
+            <div>
+              <h2 className={styles.heading2}>Tronto Coffee Stores</h2>
+              <div className={styles.cardLayout}>
+                {coffeeStores.map(coffeeStore => (
+                  <Card
+                    key={coffeeStore.id}
+                    name={coffeeStore.name}
+                    imgUrl={
+                      coffeeStore.imgUrl ||
+                      'https://images.unsplash.com/photo-1504753793650-d4a2b783c15e?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=2000&q=80'
+                    }
+                    href={`/coffee-store/${coffeeStore.id}`}
+                    className={styles.card}
+                  />
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </main>
     </div>
   );
