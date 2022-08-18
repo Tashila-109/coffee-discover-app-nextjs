@@ -8,7 +8,10 @@ import { fetchCoffeeStores } from '../lib/coffee-stores';
 import styles from '../styles/Home.module.css';
 
 export default function Home({ coffeeStores }) {
-  const handleOnButtonClick = () => {};
+  const handleOnBannerBtnClick = () => {
+    console.log("hi banner button");
+    // handleTrackLocation();
+  };
 
   return (
     <div className={styles.container}>
@@ -19,7 +22,7 @@ export default function Home({ coffeeStores }) {
       </Head>
 
       <main className={styles.main}>
-        <Banner buttonText='View stores nearby' onButtonClick={handleOnButtonClick} />
+        <Banner buttonText='View stores nearby' onButtonClick={handleOnBannerBtnClick} />
         <div className={styles.heroImage}>
           <Image src='/static/hero-image.png' alt='Hero-Image' width={700} height={400} />
         </div>
