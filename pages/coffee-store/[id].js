@@ -70,9 +70,13 @@ const CoffeeStore = props => {
 export async function getStaticProps({ params }) {
   const coffeeStores = await fetchCoffeeStores();
 
+  const findCoffeeStoreById = coffeeStores.find(coffeeStore => {
+    return coffeeStore.id.toString() === params.id; //dynamic id
+  });
+
   return {
     props: {
-      coffeeStore: coffeeStores.find(coffeeStore => coffeeStore.id.toString() === params.id),
+      coffeeStore: findCoffeeStoreById ? findCoffeeStoreById : {},
     }, // will be passed to the page component as props
   };
 }
