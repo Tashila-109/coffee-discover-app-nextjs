@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useContext } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 
@@ -7,14 +7,19 @@ import Card from '../components/Card';
 
 import { fetchCoffeeStores } from '../lib/coffee-stores';
 import useTrackLocation from '../hooks/use-track-location';
+import { ACTION_TYPES, StoreContext } from './_app';
 
 import styles from '../styles/Home.module.css';
 
 export default function Home(props) {
-  const { handleTrackLocation, latLong, locationErrorMsg, isFindingLocation } = useTrackLocation();
+  const { handleTrackLocation, locationErrorMsg, isFindingLocation } = useTrackLocation();
 
-  const [coffeeStores, setCoffeeStores] = useState('');
+  // const [coffeeStores, setCoffeeStores] = useState('');
   const [coffeeStoresError, setCoffeeStoresError] = useState(null);
+
+  const { dispatch, state } = useContext(StoreContext);
+
+  const { coffeeStores, latLong } = state;
 
   console.log({ latLong, locationErrorMsg });
 
@@ -24,7 +29,13 @@ export default function Home(props) {
         try {
           const fetchedCoffeeStores = await fetchCoffeeStores(latLong, 6);
           console.log({ fetchedCoffeeStores });
-          setCoffeeStores(fetchedCoffeeStores);
+          // setCoffeeStores(fetchedCoffeeStores);
+          dispatch({
+            type: ACTION_TYPES.SET_COFFEE_STORES,
+            payload: {
+              coffeeStores: fetchedCoffeeStores,
+            },
+          });
           //set coffee stores
         } catch (error) {
           //set error
