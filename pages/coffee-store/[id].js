@@ -1,3 +1,4 @@
+import { useContext, useState, useEffect } from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -5,17 +6,37 @@ import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
 import { fetchCoffeeStores } from '../../lib/coffee-stores';
+import { StoreContext } from '../_app';
+import { isEmpty } from '../../utils';
 
 import styles from '../../styles/coffee-store.module.css';
 
-const CoffeeStore = props => {
+const CoffeeStore = initialProps => {
   const router = useRouter();
-
   if (router.isFallback) {
     return <div>Loading...</div>;
   }
 
-  const { location, name, imgUrl } = props.coffeeStore;
+  const id = router.query.id;
+
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
+
+  const {
+    state: { coffeeStores },
+  } = useContext(StoreContext);
+
+  useEffect(() => {
+    if (isEmpty(initialProps.coffeeStore)) {
+      if (coffeeStores.length > 0) {
+        const findCoffeeStoreById = coffeeStores.find(coffeeStore => {
+          return coffeeStore.id.toString() === id; //dynamic id
+        });
+        setCoffeeStore(findCoffeeStoreById);
+      }
+    }
+  }, [id]);
+
+  const { name, address, neighbourhood, imgUrl } = coffeeStore;
 
   const hanelUpvoteButton = () => {
     console.log('Up vote');
