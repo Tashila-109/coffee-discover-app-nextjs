@@ -4,10 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import classNames from 'classnames';
+import useSWR from 'swr';
 
 import { fetchCoffeeStores } from '../../lib/coffee-stores';
 import { StoreContext } from '../../store/store-context';
-import { isEmpty } from '../../utils';
+import { fetcher, isEmpty } from '../../utils';
 
 import styles from '../../styles/coffee-store.module.css';
 
@@ -66,11 +67,25 @@ const CoffeeStore = initialProps => {
 
   const [votingCount, setVotingCount] = useState(1);
 
+  const { data, error } = useSWR(`/api/getCoffeeStoreById?id=${id}`, fetcher);
+
+  useEffect(() => {
+    if (data && data.length > 0) {
+      console.log('data from SWR', data);
+      setCoffeeStore(data[0]);
+      setVotingCount(data[0].voting);
+    }
+  }, [data]);
+
   const handleUpvoteButton = () => {
     console.log('handle upvote');
     let count = votingCount + 1;
     setVotingCount(count);
   };
+
+  if (error) {
+    return <div>Something went wrong retrieving coffee store page</div>;
+  }
 
   if (router.isFallback) {
     return <div>Loading...</div>;
@@ -113,7 +128,7 @@ const CoffeeStore = initialProps => {
             <p className={styles.text}>{votingCount}</p>
           </div>
 
-          <button className={styles.upvoteButton} onClick={hanelUpvoteButton}>
+          <button className={styles.upvoteButton} onClick={handleUpvoteButton}>
             Up Vote
           </button>
         </div>
