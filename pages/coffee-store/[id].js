@@ -56,8 +56,11 @@ const CoffeeStore = initialProps => {
         setCoffeeStore(coffeeStoreFromContext);
         handleCreateCoffeeStore(coffeeStoreFromContext);
       }
+    } else {
+      // SSG
+      handleCreateCoffeeStore(initialProps.coffeeStore);
     }
-  }, [id]);
+  }, [id, initialProps.coffeeStore]);
 
   const { name, address, neighbourhood, imgUrl } = coffeeStore;
 
