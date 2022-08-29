@@ -6,16 +6,13 @@ import { useRouter } from 'next/router';
 import classNames from 'classnames';
 
 import { fetchCoffeeStores } from '../../lib/coffee-stores';
-import { StoreContext } from "../../store/store-context";
+import { StoreContext } from '../../store/store-context';
 import { isEmpty } from '../../utils';
 
 import styles from '../../styles/coffee-store.module.css';
 
 const CoffeeStore = initialProps => {
   const router = useRouter();
-  if (router.isFallback) {
-    return <div>Loading...</div>;
-  }
 
   const id = router.query.id;
 
@@ -25,13 +22,39 @@ const CoffeeStore = initialProps => {
     state: { coffeeStores },
   } = useContext(StoreContext);
 
+  const handleCreateCoffeeStore = async coffeeStore => {
+    try {
+      const { id, name, voting, imgUrl, neighbourhood, address } = coffeeStore;
+      const response = await fetch('/api/createCoffeeStore', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          id,
+          name,
+          voting: 0,
+          imgUrl,
+          neighbourhood: neighbourhood || '',
+          address: address || '',
+        }),
+      });
+
+      const dbCoffeeStore = await response.json();
+      console.log({ dbCoffeeStore });
+    } catch (err) {
+      console.error('Error creating coffee store', err);
+    }
+  };
+
   useEffect(() => {
     if (isEmpty(initialProps.coffeeStore)) {
       if (coffeeStores.length > 0) {
-        const findCoffeeStoreById = coffeeStores.find(coffeeStore => {
+        const coffeeStoreFromContext = coffeeStores.find(coffeeStore => {
           return coffeeStore.id.toString() === id; //dynamic id
         });
-        setCoffeeStore(findCoffeeStoreById);
+        setCoffeeStore(coffeeStoreFromContext);
+        handleCreateCoffeeStore(coffeeStoreFromContext);
       }
     }
   }, [id]);
@@ -41,6 +64,10 @@ const CoffeeStore = initialProps => {
   const hanelUpvoteButton = () => {
     console.log('Up vote');
   };
+
+  if (router.isFallback) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div className={styles.layout}>
