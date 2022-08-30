@@ -42,7 +42,6 @@ const CoffeeStore = initialProps => {
       });
 
       const dbCoffeeStore = await response.json();
-      console.log({ dbCoffeeStore });
     } catch (err) {
       console.error('Error creating coffee store', err);
     }
@@ -61,7 +60,7 @@ const CoffeeStore = initialProps => {
       // SSG
       handleCreateCoffeeStore(initialProps.coffeeStore);
     }
-  }, [id, initialProps.coffeeStore]);
+  }, [id, initialProps.coffeeStore, coffeeStores]);
 
   const { name, address, neighbourhood, imgUrl } = coffeeStore;
 

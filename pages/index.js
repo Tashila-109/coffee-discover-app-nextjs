@@ -14,23 +14,19 @@ import styles from '../styles/Home.module.css';
 export default function Home(props) {
   const { handleTrackLocation, locationErrorMsg, isFindingLocation } = useTrackLocation();
 
-  // const [coffeeStores, setCoffeeStores] = useState('');
   const [coffeeStoresError, setCoffeeStoresError] = useState(null);
 
   const { dispatch, state } = useContext(StoreContext);
 
   const { coffeeStores, latLong } = state;
 
-  console.log({ latLong, locationErrorMsg });
-
   useEffect(() => {
     async function setCoffeeStoresByLocation() {
       if (latLong) {
         try {
-          const response = await fetch(`/api/getCoffeeStoreByLocation?latLong=${latLong}&limit=30`);
+          const response = await fetch(`/api/getCoffeeStoresByLocation?latLong=${latLong}&limit=10`);
 
           const coffeeStores = await response.json();
-          // setCoffeeStores(fetchedCoffeeStores);
           dispatch({
             type: ACTION_TYPES.SET_COFFEE_STORES,
             payload: {
@@ -41,16 +37,15 @@ export default function Home(props) {
           //set coffee stores
         } catch (error) {
           //set error
-          console.log({ error });
+          console.error({ error });
           setCoffeeStoresError(error.message);
         }
       }
     }
     setCoffeeStoresByLocation();
-  }, [latLong]);
+  }, [latLong, dispatch]);
 
   const handleOnBannerBtnClick = () => {
-    console.log('hi banner button');
     handleTrackLocation();
   };
 
@@ -93,9 +88,9 @@ export default function Home(props) {
         <div className={styles.sectionWrapper}>
           {props.coffeeStores.length > 0 && (
             <div>
-              <h2 className={styles.heading2}>Tronto Coffee Stores</h2>
+              <h2 className={styles.heading2}>Toronto Coffee Stores</h2>
               <div className={styles.cardLayout}>
-                {coffeeStores.map(coffeeStore => (
+                {props.coffeeStores.map(coffeeStore => (
                   <Card
                     key={coffeeStore.id}
                     name={coffeeStore.name}
