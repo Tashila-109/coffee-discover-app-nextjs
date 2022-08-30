@@ -17,7 +17,7 @@ const CoffeeStore = initialProps => {
 
   const id = router.query.id;
 
-  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore);
+  const [coffeeStore, setCoffeeStore] = useState(initialProps.coffeeStore || {});
 
   const {
     state: { coffeeStores },
@@ -127,19 +127,19 @@ const CoffeeStore = initialProps => {
 
         <div className={classNames('glass', styles.col2)}>
           <div className={styles.iconWrapper}>
-            <Image src='/static/icons/places.svg' width={24} height={24} alt='Places' />
+            <Image src='/static/icons/places.svg' width={24} height={24} alt='Places Icon' />
             <p className={styles.text}>{location.address}</p>
           </div>
 
           {location.region && (
             <div className={styles.iconWrapper}>
-              <Image src='/static/icons/nearMe.svg' width={24} height={24} alt='Near Me' />
+              <Image src='/static/icons/nearMe.svg' width={24} height={24} alt='Near Me Icon' />
               <p className={styles.text}>{location.region}</p>
             </div>
           )}
 
           <div className={styles.iconWrapper}>
-            <Image src='/static/icons/star.svg' width={24} height={24} alt='Star' />
+            <Image src='/static/icons/star.svg' width={24} height={24} alt='Star Icon' />
             <p className={styles.text}>{votingCount}</p>
           </div>
 
